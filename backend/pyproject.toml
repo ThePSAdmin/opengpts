@@ -1,68 +1,3 @@
-[tool.poetry]
-name = "opengpts"
-version = "0.1.0"
-description = ""
-authors = ["Your Name <you@example.com>"]
-readme = "README.md"
-packages = [{include = "app"}]
-
-[tool.poetry.dependencies]
-python = "^3.9.0,<3.12"
-sse-starlette = "^1.6.5"
-tomli-w = "^1.0.0"
-uvicorn = "^0.23.2"
-fastapi = "^0.103.2"
-# Uncomment if you need to work from a development branch
-# This will only work for local development though!
-# langchain = { git = "git@github.com:langchain-ai/langchain.git/", branch = "nc/subclass-runnable-binding" , subdirectory = "libs/langchain"}
-orjson = "^3.9.10"
-python-multipart = "^0.0.6"
-tiktoken = "^0"
-langchain = "^0.3"
-langgraph = "0.2.45"
-langgraph-checkpoint-postgres = "^2.0.2"
-pydantic = "^2"
-langchain-openai = "^0.2"
-beautifulsoup4 = "^4.12.3"
-boto3 = "^1.34.28"
-duckduckgo-search = "^5.3.0"
-arxiv = "^2.1.0"
-kay = "^0.1.2"
-xmltodict = "^0.13.0"
-wikipedia = "^1.4.0"
-langchain-google-vertexai = "^2.0"
-langchain-google-community = "^2.0.1"
-setuptools = "^69.0.3"
-pdfminer-six = "^20231228"
-fireworks-ai = "^0.11.2"
-httpx = { version = "^0", extras = ["socks"] }
-unstructured = {extras = ["doc", "docx"], version = "^0"}
-pgvector = "^0.2.5"
-psycopg2-binary = "^2.9.9"
-asyncpg = "^0.29.0"
-langchain-core = "^0.3"
-pyjwt = {extras = ["crypto"], version = "^2.8.0"}
-langchain-anthropic = "^0.2"
-structlog = "^24.1.0"
-python-json-logger = "^2.0.7"
-
-[tool.poetry.group.dev.dependencies]
-uvicorn = "^0.23.2"
-pygithub = "^2.1.1"
-
-[tool.poetry.group.lint.dependencies]
-ruff = "^0.1.4"
-codespell = "^2.2.0"
-
-[tool.poetry.group.test.dependencies]
-pytest = "^7.2.1"
-pytest-cov = "^4.0.0"
-pytest-asyncio = "^0.21.1"
-pytest-mock = "^3.11.1"
-pytest-socket = "^0.6.0"
-pytest-watch = "^4.2.0"
-pytest-timeout = "^2.2.0"
-
 [tool.coverage.run]
 omit = [
     "tests/*",
@@ -83,6 +18,96 @@ timeout = 30
 asyncio_mode = "auto"
 
 
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "uvicorn<1.0.0,>=0.23.2",
+    "pygithub<3.0.0,>=2.1.1",
+]
+lint = [
+    "ruff<1.0.0,>=0.1.4",
+    "codespell<3.0.0,>=2.2.0",
+]
+test = [
+    "pytest<8.0.0,>=7.2.1",
+    "pytest-cov<5.0.0,>=4.0.0",
+    "pytest-asyncio<1.0.0,>=0.21.1",
+    "pytest-mock<4.0.0,>=3.11.1",
+    "pytest-socket<1.0.0,>=0.6.0",
+    "pytest-watch<5.0.0,>=4.2.0",
+    "pytest-timeout<3.0.0,>=2.2.0",
+]
+
+[tool.pdm.build]
+includes = [
+    "app",
+]
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[project]
+authors = [
+    {name = "Your Name", email = "you@example.com"},
+]
+requires-python = "<3.12,<4.0.0,>=3.9.0"
+dependencies = [
+    "sse-starlette<2.0.0,>=1.6.5",
+    "tomli-w<2.0.0,>=1.0.0",
+    "uvicorn>=0.23.2,<1.0.0",
+    "fastapi<1.0.0,>=0.103.2",
+    "orjson<4.0.0,>=3.9.10",
+    "python-multipart<1.0.0,>=0.0.6",
+    "tiktoken<1,>=0",
+    "langchain<1.0,>=0.3",
+    "langgraph==0.2.45",
+    "langgraph-checkpoint-postgres<3.0.0,>=2.0.2",
+    "pydantic<3,>=2",
+    "langchain-openai<1.0,>=0.2",
+    "beautifulsoup4<5.0.0,>=4.12.3",
+    "boto3<2.0.0,>=1.34.28",
+    "duckduckgo-search<6.0.0,>=5.3.0",
+    "arxiv<3.0.0,>=2.1.0",
+    "kay<1.0.0,>=0.1.2",
+    "xmltodict<1.0.0,>=0.13.0",
+    "wikipedia<2.0.0,>=1.4.0",
+    "langchain-google-vertexai<3.0,>=2.0",
+    "langchain-google-community<3.0.0,>=2.0.1",
+    "setuptools<70.0.0,>=69.0.3",
+    "pdfminer-six<20231229,>=20231228",
+    "fireworks-ai<1.0.0,>=0.11.2",
+    "httpx[socks]<1,>=0",
+    "unstructured[doc,docx]<1,>=0",
+    "pgvector<1.0.0,>=0.2.5",
+    "psycopg2-binary<3.0.0,>=2.9.9",
+    "asyncpg<1.0.0,>=0.29.0",
+    "langchain-core<1.0,>=0.3",
+    "pyjwt[crypto]<3.0.0,>=2.8.0",
+    "langchain-anthropic<1.0,>=0.2",
+    "structlog<25.0.0,>=24.1.0",
+    "python-json-logger<3.0.0,>=2.0.7",
+    "google-auth>=2.38.0",
+]
+name = "opengpts"
+version = "0.1.0"
+description = ""
+
+[dependency-groups]
+dev = [
+    "uvicorn<1.0.0,>=0.23.2",
+    "pygithub<3.0.0,>=2.1.1",
+]
+lint = [
+    "ruff<1.0.0,>=0.1.4",
+    "codespell<3.0.0,>=2.2.0",
+]
+test = [
+    "pytest<8.0.0,>=7.2.1",
+    "pytest-cov<5.0.0,>=4.0.0",
+    "pytest-asyncio<1.0.0,>=0.21.1",
+    "pytest-mock<4.0.0,>=3.11.1",
+    "pytest-socket<1.0.0,>=0.6.0",
+    "pytest-watch<5.0.0,>=4.2.0",
+    "pytest-timeout<3.0.0,>=2.2.0",
+]
