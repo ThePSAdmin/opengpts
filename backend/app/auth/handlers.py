@@ -4,6 +4,8 @@ from typing import Annotated
 
 import jwt
 import requests
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
 from fastapi import Depends, HTTPException, Request
 from fastapi.security.http import HTTPBearer
 
@@ -102,12 +104,36 @@ class JWTAuthOIDC(JWTAuthBase):
         return jwt.PyJWKClient(config["jwks_uri"], cache_jwk_set=True)
 
 
+class GoogleAuth(AuthHandler):
+    """Auth handler that verifies Google IAP JWT tokens."""
+
+    async def __call__(self, request: Request) -> User:
+        iap_jwt = request.headers.get('X-Goog-Iap-Jwt-Assertion')
+        if not iap_jwt:
+            raise HTTPException(status_code=401, detail="No IAP token found")
+        
+        try:
+            # Verify the token
+            info = id_token.verify_oauth2_token(
+                iap_jwt, 
+                google_requests.Request(), 
+                audience=settings.google_auth.client_id
+            )
+            # Use the email as the sub (unique identifier)
+            user, _ = await storage.get_or_create_user(info['email'])
+            return user
+        except ValueError as e:
+            raise HTTPException(status_code=401, detail=str(e))
+
+
 @lru_cache(maxsize=1)
 def get_auth_handler() -> AuthHandler:
     if settings.auth_type == AuthType.JWT_LOCAL:
         return JWTAuthLocal()
     elif settings.auth_type == AuthType.JWT_OIDC:
         return JWTAuthOIDC()
+    elif settings.auth_type == AuthType.GOOGLE:
+        return GoogleAuth()
     return NOOPAuth()
 
 

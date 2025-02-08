@@ -11,6 +11,7 @@ class AuthType(Enum):
     NOOP = "noop"
     JWT_LOCAL = "jwt_local"
     JWT_OIDC = "jwt_oidc"
+    GOOGLE = "google"
 
 
 class JWTSettingsBase(BaseSettings):
@@ -52,10 +53,19 @@ class JWTSettingsOIDC(JWTSettingsBase):
     ...
 
 
+class GoogleAuthSettings(BaseSettings):
+    client_id: str
+
+    model_config = ConfigDict(
+        env_prefix="google_auth_",
+    )
+
+
 class Settings(BaseSettings):
     auth_type: AuthType
     jwt_local: Optional[JWTSettingsLocal] = None
     jwt_oidc: Optional[JWTSettingsOIDC] = None
+    google_auth: Optional[GoogleAuthSettings] = None
 
     @model_validator(mode="before")
     @classmethod
@@ -69,6 +79,10 @@ class Settings(BaseSettings):
             raise ValueError(
                 "jwt oidc settings must be set when auth type is jwt_oidc."
             )
+        if auth_type == AuthType.GOOGLE and values.get("google_auth") is None:
+            raise ValueError(
+                "google auth settings must be set when auth type is google."
+            )
         return values
 
 
@@ -78,4 +92,6 @@ if auth_type == AuthType.JWT_LOCAL:
     kwargs["jwt_local"] = JWTSettingsLocal()
 elif auth_type == AuthType.JWT_OIDC:
     kwargs["jwt_oidc"] = JWTSettingsOIDC()
+elif auth_type == AuthType.GOOGLE:
+    kwargs["google_auth"] = GoogleAuthSettings()
 settings = Settings(**kwargs)
